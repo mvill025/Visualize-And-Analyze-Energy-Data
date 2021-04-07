@@ -1,6 +1,8 @@
 library(RMySQL)
 library(dplyr)
 library(lubridate)
+library(ggplot2)
+library(reshape2)
 
 ## Create a database connection 
 con = dbConnect(
@@ -26,6 +28,30 @@ con = dbConnect(
 #     missing value is represented by the absence of value between two 
 #     consecutive semi-colon attribute separators. For instance, the dataset 
 #     shows missing values on April 28, 2007.
+
+# 
+# Attribute Information:
+#   
+# 1.date: Date in format dd/mm/yyyy
+# 2.time: time in format hh:mm:ss
+# 3.global_active_power: household global minute-averaged active power 
+#   (in kilowatt)
+# 4.global_reactive_power: household global minute-averaged reactive power 
+#   (in kilowatt)
+# 5.voltage: minute-averaged voltage (in volt)
+# 6.global_intensity: household global minute-averaged current intensity 
+#   (in ampere)
+#
+# 7.sub_metering_1: energy sub-metering No. 1 (in watt-hour of active energy). 
+#   It corresponds to the kitchen, containing mainly a dishwasher, an oven and a
+#   microwave (hot plates are not electric but gas powered).
+#
+# 8.sub_metering_2: energy sub-metering No. 2 (in watt-hour of active energy). 
+#   It corresponds to the laundry room, containing a washing-machine, a 
+#   tumble-drier, a refrigerator and a light.
+#
+# 9.sub_metering_3: energy sub-metering No. 3 (in watt-hour of active energy). 
+#   It corresponds to an electric water-heater and an air-conditioner.
 
 ## List the tables contained in the database 
 dbListTables(con)
@@ -142,7 +168,77 @@ investigate(SUB_METERING_2006_2010)
 summary(SUB_METERING_2006_2010)
 
 # write to local file just in case :P
-# write.csv(SUB_METERING_2006_2010,"SUB_METERING_2006_2010.csv")
+write.csv(SUB_METERING_2006_2010,"SUB_METERING_2006_2010.csv")
 
+# additional EDA
+
+# meter 1:  
+# It corresponds to the kitchen, containing mainly a dishwasher, an oven and a 
+# microwave (hot plates are not electric but gas powered)
+summary(SUB_METERING_2006_2010$Sub_metering_1)
+
+# meter 2:  
+# It corresponds to the laundry room, containing a washing-machine, a 
+# tumble-drier, a refrigerator and a light.
+summary(SUB_METERING_2006_2010$Sub_metering_2)
+
+# meter 3:  
+# It corresponds to an electric water-heater and an air-conditioner.
+summary(SUB_METERING_2006_2010$Sub_metering_1)
+
+# correlation and covariance matrix
+numericalOnly <- function(df) {
+  newDF <- df 
+  newDF$Date <- NULL
+  newDF$Time <- NULL
+  newDF$DateTime <- NULL
+  return(newDF)
+}
+
+cor(numericalOnly(SUB_METERING_2006_2010))
+cov(numericalOnly(SUB_METERING_2006_2010))
+
+# splitting data based on seasons
+WinterData <- subset(SUB_METERING_2006_2010, Month == 12 | Month == 1 | Month == 2)
+SpringData <- subset(SUB_METERING_2006_2010, Month >= 3 & Month <= 5)
+SummerData <- subset(SUB_METERING_2006_2010, Month >= 6 & Month <= 8)
+FallData <- subset(SUB_METERING_2006_2010, Month >= 9 & Month <= 11)
+
+summary(WinterData)
+
+# compare cor matrices and cov matrices
+cor( numericalOnly( SUB_METERING_2006_2010 ) )
+cor( numericalOnly( WinterData ) )
+cov( numericalOnly( SUB_METERING_2006_2010 ) )
+cov( numericalOnly( WinterData ) )
+
+# create cor heat maps
+cormat <- round(cor( numericalOnly( SUB_METERING_2006_2010 ) ),2)
+melted_cormat <- melt(upper_tri, na.rm = TRUE)
+# Create a ggheatmap
+ggheatmap <- ggplot(
+  melted_cormat, 
+  aes(Var2, Var1, fill = value)
+) + 
+  geom_tile(color = "white") + 
+  scale_fill_gradient2(
+      midpoint = 0, 
+      limit = c(-1,1), 
+      space = "Lab", 
+      name="ALL Data\nCorrelation"
+    ) + 
+  theme_minimal() + 
+  theme(
+    axis.text.x = 
+      element_text(
+        angle = 45, 
+        vjust = 1, 
+        size = 12, 
+        hjust = 1
+      )
+  ) + 
+  coord_fixed()
+# Print the heatmap
+print(ggheatmap)
 
 
