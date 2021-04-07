@@ -11,6 +11,22 @@ con = dbConnect(
   host = 'data-analytics-2018.cbrosir2cswx.us-east-1.rds.amazonaws.com'
 )
 
+# Data Set Information
+# - This archive contains 2075259 measurements gathered in a house located in 
+#   Sceaux (7km of Paris, France) between December 2006 and November 2010 
+#   (47 months).
+# Notes:
+#   1.(global_active_power*1000/60 - sub_metering_1 - sub_metering_2 - sub_metering_3) 
+#     represents the active energy consumed every minute (in watt hour) in the 
+#     household by electrical equipment not measured in sub-meterings 1, 2 and 
+#     3
+#   2.The dataset contains some missing values in the measurements 
+#     (nearly 1,25% of the rows). All calendar timestamps are present in the 
+#     dataset but for some timestamps, the measurement values are missing: a 
+#     missing value is represented by the absence of value between two 
+#     consecutive semi-colon attribute separators. For instance, the dataset 
+#     shows missing values on April 28, 2007.
+
 ## List the tables contained in the database 
 dbListTables(con)
 
@@ -106,9 +122,9 @@ attr(SUB_METERING_2006_2010$DateTime, "tzone") <- "Europe/Paris"
 
 # Create "year" attribute with lubridate
 SUB_METERING_2006_2010$Year <- year(SUB_METERING_2006_2010$DateTime)
-# Create "quarter" attribute with lubridate
+# Create "quarter" attribute with lubridate 
 SUB_METERING_2006_2010$Quarter <- quarter(SUB_METERING_2006_2010$DateTime)
-# Create "month" attribute with lubridate
+# Create "month" attribute with lubridate        
 SUB_METERING_2006_2010$Month <- month(SUB_METERING_2006_2010$DateTime)
 # Create "week" attribute with lubridate
 SUB_METERING_2006_2010$Week <- week(SUB_METERING_2006_2010$DateTime)
@@ -123,5 +139,10 @@ SUB_METERING_2006_2010$Minute <- minute(SUB_METERING_2006_2010$DateTime)
 
 # inspect data
 investigate(SUB_METERING_2006_2010)
+summary(SUB_METERING_2006_2010)
 
 # write to local file just in case :P
+# write.csv(SUB_METERING_2006_2010,"SUB_METERING_2006_2010.csv")
+
+
+
