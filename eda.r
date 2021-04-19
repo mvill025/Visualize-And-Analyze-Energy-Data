@@ -184,7 +184,13 @@ summary(SUB_METERING_2006_2010$Sub_metering_2)
 
 # meter 3:  
 # It corresponds to an electric water-heater and an air-conditioner.
-summary(SUB_METERING_2006_2010$Sub_metering_1)
+summary(SUB_METERING_2006_2010$Sub_metering_3)
+
+# splitting data based on seasons
+WinterData <- subset(SUB_METERING_2006_2010, Month == 12 | Month == 1 | Month == 2)
+SpringData <- subset(SUB_METERING_2006_2010, Month >= 3 & Month <= 5)
+SummerData <- subset(SUB_METERING_2006_2010, Month >= 6 & Month <= 8)
+FallData <- subset(SUB_METERING_2006_2010, Month >= 9 & Month <= 11)
 
 # correlation and covariance matrix
 numericalOnly <- function(df) {
@@ -198,19 +204,17 @@ numericalOnly <- function(df) {
 cor(numericalOnly(SUB_METERING_2006_2010))
 cov(numericalOnly(SUB_METERING_2006_2010))
 
-# splitting data based on seasons
-WinterData <- subset(SUB_METERING_2006_2010, Month == 12 | Month == 1 | Month == 2)
-SpringData <- subset(SUB_METERING_2006_2010, Month >= 3 & Month <= 5)
-SummerData <- subset(SUB_METERING_2006_2010, Month >= 6 & Month <= 8)
-FallData <- subset(SUB_METERING_2006_2010, Month >= 9 & Month <= 11)
-
-summary(WinterData)
+print(summary(WinterData))
+print(summary(SpringData))
+print(summary(SummerData))
+print(summary(FallData))
 
 # compare cor matrices and cov matrices
+df <- WinterData
 cor( numericalOnly( SUB_METERING_2006_2010 ) )
-cor( numericalOnly( WinterData ) )
+cor( numericalOnly( df ) )
 cov( numericalOnly( SUB_METERING_2006_2010 ) )
-cov( numericalOnly( WinterData ) )
+cov( numericalOnly( df ) )
 
 # create cor heat maps
 cormat <- round(cor( numericalOnly( SUB_METERING_2006_2010 ) ),2)
@@ -222,11 +226,11 @@ ggheatmap <- ggplot(
 ) + 
   geom_tile(color = "white") + 
   scale_fill_gradient2(
-      midpoint = 0, 
-      limit = c(-1,1), 
-      space = "Lab", 
-      name="ALL Data\nCorrelation"
-    ) + 
+    midpoint = 0, 
+    limit = c(-1,1), 
+    space = "Lab", 
+    name="SUB_METERING_2006_2010 \nCorrelation"
+  ) + 
   theme_minimal() + 
   theme(
     axis.text.x = 
@@ -240,5 +244,3 @@ ggheatmap <- ggplot(
   coord_fixed()
 # Print the heatmap
 print(ggheatmap)
-
-

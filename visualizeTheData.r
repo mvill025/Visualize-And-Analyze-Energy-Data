@@ -60,6 +60,8 @@ oneWeek <- filter(
   Year == 2008 & Month == 1 & Week == 2 & Minute %% 15 == 0
 )
 
+plotSubMeteringAll(oneWeek, "Power Consumption January 8 - 14, 2008")
+
 twoMonths <- filter(
   SUB_METERING_2006_2010,
   Year == 2008 & (Month == 1 | Month == 2) & Minute %% 1 == 0
