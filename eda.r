@@ -168,7 +168,7 @@ investigate(SUB_METERING_2006_2010)
 summary(SUB_METERING_2006_2010)
 
 # write to local file just in case :P
-write.csv(SUB_METERING_2006_2010,"SUB_METERING_2006_2010.csv")
+# write.csv(SUB_METERING_2006_2010,"SUB_METERING_2006_2010.csv")
 
 # additional EDA
 

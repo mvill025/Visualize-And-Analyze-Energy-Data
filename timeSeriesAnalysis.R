@@ -37,11 +37,27 @@ tsSM1_06_09_30min <- ts(
 )
 autoplot(
   tsSM1_06_09_30min, 
-  ts.colour = 'red', 
+  ts.colour = 'blue', 
   xlab = "Time", 
   ylab = "Watt Hours", 
-  main = "Sub-meter 1 (Kitchen)"
+  main = "Sub-meter 1 (Kitchen) 30 mintues, 2006-2009"
 )
 
-## Plot sub-meter 3 with plot.ts
-plot.ts(tsSM3_070809weekly)
+house_09_daily_1400 <- filter(
+  SUB_METERING_2006_2010, 
+  Year == 2009 & Hour == 14 & Minute == 5
+)
+str(house_09_daily_1400)
+tsSM2_09_daily_1400 <- ts(
+  house_09_daily_1400$Sub_metering_2,
+  start = c(0,1),
+  frequency = 30,
+)
+autoplot(
+  tsSM2_09_daily_1400, 
+  ts.colour = 'green', 
+  xlab = "Time", 
+  ylab = "Watt Hours", 
+  main = "Sub-meter 2 (Laundry) Daily, 2009"
+)
+
