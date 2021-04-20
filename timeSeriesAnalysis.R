@@ -9,6 +9,7 @@ house070809weekly <- filter(
 )
 
 ## Create TS object with SubMeter3
+## Season = 1 year
 tsSM3_070809weekly <- ts(
   house070809weekly$Sub_metering_3, 
   frequency=52, 
@@ -21,43 +22,44 @@ autoplot(tsSM3_070809weekly)
 ## Plot sub-meter 3 with autoplot - add labels, color
 autoplot(
   tsSM3_070809weekly, 
-  ts.colour = 'red', 
+  color = 'red', 
   xlab = "Time", 
   ylab = "Watt Hours", 
   main = "Sub-meter 3"
 )
 
-house_06_09_30min <- filter(
-  SUB_METERING_2006_2010, Year >= 2006 & Year <= 2009 & Minute %% 30 == 0
-)
-tsSM1_06_09_30min <- ts(
-  house_06_09_30min$Sub_metering_1,
-  start = c(2006,1),
-  frequency = 2 * 24 * 365,
-)
-autoplot(
-  tsSM1_06_09_30min, 
-  ts.colour = 'blue', 
-  xlab = "Time", 
-  ylab = "Watt Hours", 
-  main = "Sub-meter 1 (Kitchen) 30 mintues, 2006-2009"
-)
-
+## Season = 3 months
 house_09_daily_1400 <- filter(
   SUB_METERING_2006_2010, 
-  Year == 2009 & Hour == 14 & Minute == 5
+  Year == 2009 & Hour == 14 & Minute == 1
 )
-str(house_09_daily_1400)
 tsSM2_09_daily_1400 <- ts(
   house_09_daily_1400$Sub_metering_2,
   start = c(0,1),
-  frequency = 30,
+  frequency = 30 * 3,
 )
 autoplot(
   tsSM2_09_daily_1400, 
-  ts.colour = 'green', 
+  color = 'green', 
   xlab = "Time", 
   ylab = "Watt Hours", 
   main = "Sub-meter 2 (Laundry) Daily, 2009"
 )
 
+## season = 1 Weeks
+house_10_First12Weeks_30min <- filter(
+  SUB_METERING_2006_2010, 
+  Year == 2010 & Week <= 12 & Minute %% 30 == 0
+)
+tsSM1_10_First12Weeks_30min <- ts(
+  house_10_First12Weeks_30min$Sub_metering_1,
+  start = c(1,1),
+  frequency = 2 * 23 * 7,
+)
+autoplot(
+  tsSM1_10_First12Weeks_30min, 
+  color = 'blue', 
+  xlab = "Time", 
+  ylab = "Watt Hours", 
+  main = "Sub-meter 1 (Kitchen) 30 mintues, First 12 Weeks 2010"
+)
